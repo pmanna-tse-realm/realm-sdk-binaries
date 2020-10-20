@@ -270,122 +270,6 @@ SWIFT_CLASS_NAMED("Decimal128")
 
 
 
-@class RLMProperty;
-
-/// <code>Object</code> is a class used to define Realm model objects.
-/// In Realm you define your model classes by subclassing <code>Object</code> and adding properties to be managed.
-/// You then instantiate and use your custom subclasses instead of using the <code>Object</code> class directly.
-/// \code
-/// class Dog: Object {
-///     @objc dynamic var name: String = ""
-///     @objc dynamic var adopted: Bool = false
-///     let siblings = List<Dog>()
-/// }
-///
-/// \endcode<h3>Supported property types</h3>
-/// <ul>
-///   <li>
-///     <code>String</code>, <code>NSString</code>
-///   </li>
-///   <li>
-///     <code>Int</code>
-///   </li>
-///   <li>
-///     <code>Int8</code>, <code>Int16</code>, <code>Int32</code>, <code>Int64</code>
-///   </li>
-///   <li>
-///     <code>Float</code>
-///   </li>
-///   <li>
-///     <code>Double</code>
-///   </li>
-///   <li>
-///     <code>Bool</code>
-///   </li>
-///   <li>
-///     <code>Date</code>, <code>NSDate</code>
-///   </li>
-///   <li>
-///     <code>Data</code>, <code>NSData</code>
-///   </li>
-///   <li>
-///     <code>Decimal128</code>
-///   </li>
-///   <li>
-///     <code>ObjectId</code>
-///   </li>
-///   <li>
-///     <code>@objc enum</code> which has been delcared as conforming to <code>RealmEnum</code>.
-///   </li>
-///   <li>
-///     <code>RealmOptional<Value></code> for optional numeric properties
-///   </li>
-///   <li>
-///     <code>Object</code> subclasses, to model many-to-one relationships
-///   </li>
-///   <li>
-///     <code>EmbeddedObject</code> subclasses, to model owning one-to-one relationships
-///   </li>
-///   <li>
-///     <code>List<Element></code>, to model many-to-many relationships
-///   </li>
-/// </ul>
-/// <code>String</code>, <code>NSString</code>, <code>Date</code>, <code>NSDate</code>, <code>Data</code>, <code>NSData</code>, <code>Decimal128</code>, and <code>ObjectId</code>  properties
-/// can be declared as optional. <code>Object</code> and <code>EmbeddedObject</code> subclasses <em>must</em> be declared as optional.
-/// <code>Int</code>, <code>Int8</code>, <code>Int16</code>, <code>Int32</code>, <code>Int64</code>, <code>Float</code>, <code>Double</code>, <code>Bool</code>,  enum, and <code>List</code> properties cannot.
-/// To store an optional number, use <code>RealmOptional<Int></code>, <code>RealmOptional<Float></code>, <code>RealmOptional<Double></code>, or
-/// <code>RealmOptional<Bool></code> instead, which wraps an optional numeric value. Lists cannot be optional at all.
-/// All property types except for <code>List</code> and <code>RealmOptional</code> <em>must</em> be declared as <code>@objc dynamic var</code>. <code>List</code> and
-/// <code>RealmOptional</code> properties must be declared as non-dynamic <code>let</code> properties. Swift <code>lazy</code> properties are not allowed.
-/// Note that none of the restrictions listed above apply to properties that are configured to be ignored by Realm.
-/// <h3>Querying</h3>
-/// You can retrieve all objects of a given type from a Realm by calling the <code>objects(_:)</code> instance method.
-/// <h3>Relationships</h3>
-/// See our <a href="http://realm.io/docs/cocoa">Cocoa guide</a> for more details.
-SWIFT_CLASS_NAMED("Object")
-@interface RealmSwiftObject : RLMObjectBase
-/// Creates an unmanaged instance of a Realm object.
-/// Call <code>add(_:)</code> on a <code>Realm</code> instance to add an unmanaged object into that Realm.
-/// <ul>
-///   <li>
-///     see: <code>Realm().add(_:)</code>
-///   </li>
-/// </ul>
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
-/// Indicates if the object can no longer be accessed because it is now invalid.
-/// An object can no longer be accessed if the object has been deleted from the Realm that manages it, or if
-/// <code>invalidate()</code> is called on that Realm. This property is key-value observable.
-@property (nonatomic, readonly, getter=isInvalidated) BOOL invalidated;
-/// A human-readable description of the object.
-@property (nonatomic, readonly, copy) NSString * _Nonnull description;
-/// WARNING: This is an internal helper method not intended for public use.
-/// It is not considered part of the public API.
-/// :nodoc:
-+ (NSArray<RLMProperty *> * _Nonnull)_getProperties SWIFT_WARN_UNUSED_RESULT;
-/// Override this method to specify the name of a property to be used as the primary key.
-/// Only properties of types <code>String</code> and <code>Int</code> can be designated as the primary key. Primary key properties enforce
-/// uniqueness for each value whenever the property is set, which incurs minor overhead. Indexes are created
-/// automatically for primary key properties.
-///
-/// returns:
-/// The name of the property designated as the primary key, or <code>nil</code> if the model has no primary key.
-+ (NSString * _Nullable)primaryKey SWIFT_WARN_UNUSED_RESULT;
-/// Override this method to specify the names of properties to ignore. These properties will not be managed by
-/// the Realm that manages the object.
-///
-/// returns:
-/// An array of property names to ignore.
-+ (NSArray<NSString *> * _Nonnull)ignoredProperties SWIFT_WARN_UNUSED_RESULT;
-/// Returns an array of property names for properties which should be indexed.
-/// Only string, integer, boolean, <code>Date</code>, and <code>NSDate</code> properties are supported.
-///
-/// returns:
-/// An array of property names.
-+ (NSArray<NSString *> * _Nonnull)indexedProperties SWIFT_WARN_UNUSED_RESULT;
-- (id _Nullable)objectForKeyedSubscript:(NSString * _Nonnull)key SWIFT_WARN_UNUSED_RESULT;
-- (void)setObject:(id _Nullable)value forKeyedSubscript:(NSString * _Nonnull)key;
-@end
-
 
 /// Object interface which allows untyped getters and setters for Objects.
 /// :nodoc:
@@ -403,66 +287,6 @@ SWIFT_CLASS("_TtC10RealmSwift13DynamicObject")
 @end
 
 
-/// <code>EmbeddedObject</code> is a base class used to define embedded Realm model objects.
-/// Embedded objects work similarly to normal objects, but are owned by a single
-/// parent Object (which itself may be embedded). Unlike normal top-level objects,
-/// embedded objects cannot be directly created in or added to a Realm. Instead,
-/// they can only be created as part of a parent object, or by assigning an
-/// unmanaged object to a parent object’s property. Embedded objects are
-/// automatically deleted when the parent object is deleted or when the parent is
-/// modified to no longer point at the embedded object, either by reassigning an
-/// Object property or by removing the embedded object from the List containing it.
-/// Embedded objects can only ever have a single parent object which links to
-/// them, and attempting to link to an existing managed embedded object will throw
-/// an exception.
-/// The property types supported on <code>EmbeddedObject</code> are the same as for <code>Object</code>,
-/// except for that embedded objects cannot link to top-level objects, so <code>Object</code>
-/// and <code>List<Object></code> properties are not supported (<code>EmbeddedObject</code> and
-/// <code>List<EmbeddedObject></code> <em>are</em>).
-/// Embedded objects cannot have primary keys or indexed properties.
-/// \code
-/// class Owner: Object {
-///     @objc dynamic var name: String = ""
-///     let dogs = List<Dog>()
-/// }
-/// class Dog: EmbeddedObject {
-///     @objc dynamic var name: String = ""
-///     @objc dynamic var adopted: Bool = false
-///     let owner = LinkingObjects(fromType: Owner.self, property: "dogs")
-/// }
-///
-/// \endcode
-SWIFT_CLASS_NAMED("EmbeddedObject")
-@interface RealmSwiftEmbeddedObject : RLMObjectBase
-/// :nodoc:
-+ (BOOL)isEmbedded SWIFT_WARN_UNUSED_RESULT;
-/// Creates an unmanaged instance of a Realm object.
-/// An unmanaged embedded object can be added to a Realm by assigning it to a property of a managed object or by adding it to a managed List.
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
-/// Indicates if the object can no longer be accessed because it is now invalid.
-/// An object can no longer be accessed if the object has been deleted from the Realm that manages it, or if
-/// <code>invalidate()</code> is called on that Realm.
-@property (nonatomic, readonly, getter=isInvalidated) BOOL invalidated;
-/// A human-readable description of the object.
-@property (nonatomic, readonly, copy) NSString * _Nonnull description;
-/// WARNING: This is an internal helper method not intended for public use.
-/// It is not considered part of the public API.
-/// :nodoc:
-+ (NSArray<RLMProperty *> * _Nonnull)_getProperties SWIFT_WARN_UNUSED_RESULT;
-/// Override this method to specify the names of properties to ignore. These properties will not be managed by
-/// the Realm that manages the object.
-///
-/// returns:
-/// An array of property names to ignore.
-+ (NSArray<NSString *> * _Nonnull)ignoredProperties SWIFT_WARN_UNUSED_RESULT;
-- (id _Nullable)objectForKeyedSubscript:(NSString * _Nonnull)key SWIFT_WARN_UNUSED_RESULT;
-- (void)setObject:(id _Nullable)value forKeyedSubscript:(NSString * _Nonnull)key;
-@end
-
-
-
-
-
 /// :nodoc:
 /// Internal class. Do not use directly.
 SWIFT_CLASS("_TtC10RealmSwift8ListBase")
@@ -472,12 +296,6 @@ SWIFT_CLASS("_TtC10RealmSwift8ListBase")
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 - (nonnull instancetype)initWithArray:(RLMArray<id> * _Nonnull)array OBJC_DESIGNATED_INITIALIZER;
 @end
-
-
-
-
-
-
 
 
 
@@ -539,6 +357,78 @@ SWIFT_CLASS_NAMED("ObjectId")
 
 
 
+
+
+
+
+
+
+
+@class RLMProperty;
+
+@interface RealmSwiftEmbeddedObject (SWIFT_EXTENSION(RealmSwift))
+/// :nodoc:
++ (BOOL)isEmbedded SWIFT_WARN_UNUSED_RESULT;
+/// Indicates if the object can no longer be accessed because it is now invalid.
+/// An object can no longer be accessed if the object has been deleted from the Realm that manages it, or if
+/// <code>invalidate()</code> is called on that Realm.
+@property (nonatomic, readonly, getter=isInvalidated) BOOL invalidated;
+/// A human-readable description of the object.
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+/// WARNING: This is an internal helper method not intended for public use.
+/// It is not considered part of the public API.
+/// :nodoc:
++ (NSArray<RLMProperty *> * _Nonnull)_getProperties SWIFT_WARN_UNUSED_RESULT;
+/// Override this method to specify the names of properties to ignore. These properties will not be managed by
+/// the Realm that manages the object.
+///
+/// returns:
+/// An array of property names to ignore.
++ (NSArray<NSString *> * _Nonnull)ignoredProperties SWIFT_WARN_UNUSED_RESULT;
+- (id _Nullable)objectForKeyedSubscript:(NSString * _Nonnull)key SWIFT_WARN_UNUSED_RESULT;
+- (void)setObject:(id _Nullable)value forKeyedSubscript:(NSString * _Nonnull)key;
+@end
+
+
+
+
+
+
+
+@interface RealmSwiftObject (SWIFT_EXTENSION(RealmSwift))
+/// Indicates if the object can no longer be accessed because it is now invalid.
+/// An object can no longer be accessed if the object has been deleted from the Realm that manages it, or if
+/// <code>invalidate()</code> is called on that Realm. This property is key-value observable.
+@property (nonatomic, readonly, getter=isInvalidated) BOOL invalidated;
+/// A human-readable description of the object.
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+/// WARNING: This is an internal helper method not intended for public use.
+/// It is not considered part of the public API.
+/// :nodoc:
++ (NSArray<RLMProperty *> * _Nonnull)_getProperties SWIFT_WARN_UNUSED_RESULT;
+/// Override this method to specify the name of a property to be used as the primary key.
+/// Only properties of types <code>String</code> and <code>Int</code> can be designated as the primary key. Primary key properties enforce
+/// uniqueness for each value whenever the property is set, which incurs minor overhead. Indexes are created
+/// automatically for primary key properties.
+///
+/// returns:
+/// The name of the property designated as the primary key, or <code>nil</code> if the model has no primary key.
++ (NSString * _Nullable)primaryKey SWIFT_WARN_UNUSED_RESULT;
+/// Override this method to specify the names of properties to ignore. These properties will not be managed by
+/// the Realm that manages the object.
+///
+/// returns:
+/// An array of property names to ignore.
++ (NSArray<NSString *> * _Nonnull)ignoredProperties SWIFT_WARN_UNUSED_RESULT;
+/// Returns an array of property names for properties which should be indexed.
+/// Only string, integer, boolean, <code>Date</code>, and <code>NSDate</code> properties are supported.
+///
+/// returns:
+/// An array of property names.
++ (NSArray<NSString *> * _Nonnull)indexedProperties SWIFT_WARN_UNUSED_RESULT;
+- (id _Nullable)objectForKeyedSubscript:(NSString * _Nonnull)key SWIFT_WARN_UNUSED_RESULT;
+- (void)setObject:(id _Nullable)value forKeyedSubscript:(NSString * _Nonnull)key;
+@end
 
 #if __has_attribute(external_source_symbol)
 # pragma clang attribute pop
@@ -817,122 +707,6 @@ SWIFT_CLASS_NAMED("Decimal128")
 
 
 
-@class RLMProperty;
-
-/// <code>Object</code> is a class used to define Realm model objects.
-/// In Realm you define your model classes by subclassing <code>Object</code> and adding properties to be managed.
-/// You then instantiate and use your custom subclasses instead of using the <code>Object</code> class directly.
-/// \code
-/// class Dog: Object {
-///     @objc dynamic var name: String = ""
-///     @objc dynamic var adopted: Bool = false
-///     let siblings = List<Dog>()
-/// }
-///
-/// \endcode<h3>Supported property types</h3>
-/// <ul>
-///   <li>
-///     <code>String</code>, <code>NSString</code>
-///   </li>
-///   <li>
-///     <code>Int</code>
-///   </li>
-///   <li>
-///     <code>Int8</code>, <code>Int16</code>, <code>Int32</code>, <code>Int64</code>
-///   </li>
-///   <li>
-///     <code>Float</code>
-///   </li>
-///   <li>
-///     <code>Double</code>
-///   </li>
-///   <li>
-///     <code>Bool</code>
-///   </li>
-///   <li>
-///     <code>Date</code>, <code>NSDate</code>
-///   </li>
-///   <li>
-///     <code>Data</code>, <code>NSData</code>
-///   </li>
-///   <li>
-///     <code>Decimal128</code>
-///   </li>
-///   <li>
-///     <code>ObjectId</code>
-///   </li>
-///   <li>
-///     <code>@objc enum</code> which has been delcared as conforming to <code>RealmEnum</code>.
-///   </li>
-///   <li>
-///     <code>RealmOptional<Value></code> for optional numeric properties
-///   </li>
-///   <li>
-///     <code>Object</code> subclasses, to model many-to-one relationships
-///   </li>
-///   <li>
-///     <code>EmbeddedObject</code> subclasses, to model owning one-to-one relationships
-///   </li>
-///   <li>
-///     <code>List<Element></code>, to model many-to-many relationships
-///   </li>
-/// </ul>
-/// <code>String</code>, <code>NSString</code>, <code>Date</code>, <code>NSDate</code>, <code>Data</code>, <code>NSData</code>, <code>Decimal128</code>, and <code>ObjectId</code>  properties
-/// can be declared as optional. <code>Object</code> and <code>EmbeddedObject</code> subclasses <em>must</em> be declared as optional.
-/// <code>Int</code>, <code>Int8</code>, <code>Int16</code>, <code>Int32</code>, <code>Int64</code>, <code>Float</code>, <code>Double</code>, <code>Bool</code>,  enum, and <code>List</code> properties cannot.
-/// To store an optional number, use <code>RealmOptional<Int></code>, <code>RealmOptional<Float></code>, <code>RealmOptional<Double></code>, or
-/// <code>RealmOptional<Bool></code> instead, which wraps an optional numeric value. Lists cannot be optional at all.
-/// All property types except for <code>List</code> and <code>RealmOptional</code> <em>must</em> be declared as <code>@objc dynamic var</code>. <code>List</code> and
-/// <code>RealmOptional</code> properties must be declared as non-dynamic <code>let</code> properties. Swift <code>lazy</code> properties are not allowed.
-/// Note that none of the restrictions listed above apply to properties that are configured to be ignored by Realm.
-/// <h3>Querying</h3>
-/// You can retrieve all objects of a given type from a Realm by calling the <code>objects(_:)</code> instance method.
-/// <h3>Relationships</h3>
-/// See our <a href="http://realm.io/docs/cocoa">Cocoa guide</a> for more details.
-SWIFT_CLASS_NAMED("Object")
-@interface RealmSwiftObject : RLMObjectBase
-/// Creates an unmanaged instance of a Realm object.
-/// Call <code>add(_:)</code> on a <code>Realm</code> instance to add an unmanaged object into that Realm.
-/// <ul>
-///   <li>
-///     see: <code>Realm().add(_:)</code>
-///   </li>
-/// </ul>
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
-/// Indicates if the object can no longer be accessed because it is now invalid.
-/// An object can no longer be accessed if the object has been deleted from the Realm that manages it, or if
-/// <code>invalidate()</code> is called on that Realm. This property is key-value observable.
-@property (nonatomic, readonly, getter=isInvalidated) BOOL invalidated;
-/// A human-readable description of the object.
-@property (nonatomic, readonly, copy) NSString * _Nonnull description;
-/// WARNING: This is an internal helper method not intended for public use.
-/// It is not considered part of the public API.
-/// :nodoc:
-+ (NSArray<RLMProperty *> * _Nonnull)_getProperties SWIFT_WARN_UNUSED_RESULT;
-/// Override this method to specify the name of a property to be used as the primary key.
-/// Only properties of types <code>String</code> and <code>Int</code> can be designated as the primary key. Primary key properties enforce
-/// uniqueness for each value whenever the property is set, which incurs minor overhead. Indexes are created
-/// automatically for primary key properties.
-///
-/// returns:
-/// The name of the property designated as the primary key, or <code>nil</code> if the model has no primary key.
-+ (NSString * _Nullable)primaryKey SWIFT_WARN_UNUSED_RESULT;
-/// Override this method to specify the names of properties to ignore. These properties will not be managed by
-/// the Realm that manages the object.
-///
-/// returns:
-/// An array of property names to ignore.
-+ (NSArray<NSString *> * _Nonnull)ignoredProperties SWIFT_WARN_UNUSED_RESULT;
-/// Returns an array of property names for properties which should be indexed.
-/// Only string, integer, boolean, <code>Date</code>, and <code>NSDate</code> properties are supported.
-///
-/// returns:
-/// An array of property names.
-+ (NSArray<NSString *> * _Nonnull)indexedProperties SWIFT_WARN_UNUSED_RESULT;
-- (id _Nullable)objectForKeyedSubscript:(NSString * _Nonnull)key SWIFT_WARN_UNUSED_RESULT;
-- (void)setObject:(id _Nullable)value forKeyedSubscript:(NSString * _Nonnull)key;
-@end
-
 
 /// Object interface which allows untyped getters and setters for Objects.
 /// :nodoc:
@@ -950,66 +724,6 @@ SWIFT_CLASS("_TtC10RealmSwift13DynamicObject")
 @end
 
 
-/// <code>EmbeddedObject</code> is a base class used to define embedded Realm model objects.
-/// Embedded objects work similarly to normal objects, but are owned by a single
-/// parent Object (which itself may be embedded). Unlike normal top-level objects,
-/// embedded objects cannot be directly created in or added to a Realm. Instead,
-/// they can only be created as part of a parent object, or by assigning an
-/// unmanaged object to a parent object’s property. Embedded objects are
-/// automatically deleted when the parent object is deleted or when the parent is
-/// modified to no longer point at the embedded object, either by reassigning an
-/// Object property or by removing the embedded object from the List containing it.
-/// Embedded objects can only ever have a single parent object which links to
-/// them, and attempting to link to an existing managed embedded object will throw
-/// an exception.
-/// The property types supported on <code>EmbeddedObject</code> are the same as for <code>Object</code>,
-/// except for that embedded objects cannot link to top-level objects, so <code>Object</code>
-/// and <code>List<Object></code> properties are not supported (<code>EmbeddedObject</code> and
-/// <code>List<EmbeddedObject></code> <em>are</em>).
-/// Embedded objects cannot have primary keys or indexed properties.
-/// \code
-/// class Owner: Object {
-///     @objc dynamic var name: String = ""
-///     let dogs = List<Dog>()
-/// }
-/// class Dog: EmbeddedObject {
-///     @objc dynamic var name: String = ""
-///     @objc dynamic var adopted: Bool = false
-///     let owner = LinkingObjects(fromType: Owner.self, property: "dogs")
-/// }
-///
-/// \endcode
-SWIFT_CLASS_NAMED("EmbeddedObject")
-@interface RealmSwiftEmbeddedObject : RLMObjectBase
-/// :nodoc:
-+ (BOOL)isEmbedded SWIFT_WARN_UNUSED_RESULT;
-/// Creates an unmanaged instance of a Realm object.
-/// An unmanaged embedded object can be added to a Realm by assigning it to a property of a managed object or by adding it to a managed List.
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
-/// Indicates if the object can no longer be accessed because it is now invalid.
-/// An object can no longer be accessed if the object has been deleted from the Realm that manages it, or if
-/// <code>invalidate()</code> is called on that Realm.
-@property (nonatomic, readonly, getter=isInvalidated) BOOL invalidated;
-/// A human-readable description of the object.
-@property (nonatomic, readonly, copy) NSString * _Nonnull description;
-/// WARNING: This is an internal helper method not intended for public use.
-/// It is not considered part of the public API.
-/// :nodoc:
-+ (NSArray<RLMProperty *> * _Nonnull)_getProperties SWIFT_WARN_UNUSED_RESULT;
-/// Override this method to specify the names of properties to ignore. These properties will not be managed by
-/// the Realm that manages the object.
-///
-/// returns:
-/// An array of property names to ignore.
-+ (NSArray<NSString *> * _Nonnull)ignoredProperties SWIFT_WARN_UNUSED_RESULT;
-- (id _Nullable)objectForKeyedSubscript:(NSString * _Nonnull)key SWIFT_WARN_UNUSED_RESULT;
-- (void)setObject:(id _Nullable)value forKeyedSubscript:(NSString * _Nonnull)key;
-@end
-
-
-
-
-
 /// :nodoc:
 /// Internal class. Do not use directly.
 SWIFT_CLASS("_TtC10RealmSwift8ListBase")
@@ -1019,10 +733,6 @@ SWIFT_CLASS("_TtC10RealmSwift8ListBase")
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 - (nonnull instancetype)initWithArray:(RLMArray<id> * _Nonnull)array OBJC_DESIGNATED_INITIALIZER;
 @end
-
-
-
-
 
 
 
@@ -1077,6 +787,76 @@ SWIFT_CLASS_NAMED("ObjectId")
 
 
 
+
+
+
+
+
+
+
+@class RLMProperty;
+
+@interface RealmSwiftEmbeddedObject (SWIFT_EXTENSION(RealmSwift))
+/// :nodoc:
++ (BOOL)isEmbedded SWIFT_WARN_UNUSED_RESULT;
+/// Indicates if the object can no longer be accessed because it is now invalid.
+/// An object can no longer be accessed if the object has been deleted from the Realm that manages it, or if
+/// <code>invalidate()</code> is called on that Realm.
+@property (nonatomic, readonly, getter=isInvalidated) BOOL invalidated;
+/// A human-readable description of the object.
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+/// WARNING: This is an internal helper method not intended for public use.
+/// It is not considered part of the public API.
+/// :nodoc:
++ (NSArray<RLMProperty *> * _Nonnull)_getProperties SWIFT_WARN_UNUSED_RESULT;
+/// Override this method to specify the names of properties to ignore. These properties will not be managed by
+/// the Realm that manages the object.
+///
+/// returns:
+/// An array of property names to ignore.
++ (NSArray<NSString *> * _Nonnull)ignoredProperties SWIFT_WARN_UNUSED_RESULT;
+- (id _Nullable)objectForKeyedSubscript:(NSString * _Nonnull)key SWIFT_WARN_UNUSED_RESULT;
+- (void)setObject:(id _Nullable)value forKeyedSubscript:(NSString * _Nonnull)key;
+@end
+
+
+
+
+
+@interface RealmSwiftObject (SWIFT_EXTENSION(RealmSwift))
+/// Indicates if the object can no longer be accessed because it is now invalid.
+/// An object can no longer be accessed if the object has been deleted from the Realm that manages it, or if
+/// <code>invalidate()</code> is called on that Realm. This property is key-value observable.
+@property (nonatomic, readonly, getter=isInvalidated) BOOL invalidated;
+/// A human-readable description of the object.
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+/// WARNING: This is an internal helper method not intended for public use.
+/// It is not considered part of the public API.
+/// :nodoc:
++ (NSArray<RLMProperty *> * _Nonnull)_getProperties SWIFT_WARN_UNUSED_RESULT;
+/// Override this method to specify the name of a property to be used as the primary key.
+/// Only properties of types <code>String</code> and <code>Int</code> can be designated as the primary key. Primary key properties enforce
+/// uniqueness for each value whenever the property is set, which incurs minor overhead. Indexes are created
+/// automatically for primary key properties.
+///
+/// returns:
+/// The name of the property designated as the primary key, or <code>nil</code> if the model has no primary key.
++ (NSString * _Nullable)primaryKey SWIFT_WARN_UNUSED_RESULT;
+/// Override this method to specify the names of properties to ignore. These properties will not be managed by
+/// the Realm that manages the object.
+///
+/// returns:
+/// An array of property names to ignore.
++ (NSArray<NSString *> * _Nonnull)ignoredProperties SWIFT_WARN_UNUSED_RESULT;
+/// Returns an array of property names for properties which should be indexed.
+/// Only string, integer, boolean, <code>Date</code>, and <code>NSDate</code> properties are supported.
+///
+/// returns:
+/// An array of property names.
++ (NSArray<NSString *> * _Nonnull)indexedProperties SWIFT_WARN_UNUSED_RESULT;
+- (id _Nullable)objectForKeyedSubscript:(NSString * _Nonnull)key SWIFT_WARN_UNUSED_RESULT;
+- (void)setObject:(id _Nullable)value forKeyedSubscript:(NSString * _Nonnull)key;
+@end
 
 #if __has_attribute(external_source_symbol)
 # pragma clang attribute pop
@@ -1357,122 +1137,6 @@ SWIFT_CLASS_NAMED("Decimal128")
 
 
 
-@class RLMProperty;
-
-/// <code>Object</code> is a class used to define Realm model objects.
-/// In Realm you define your model classes by subclassing <code>Object</code> and adding properties to be managed.
-/// You then instantiate and use your custom subclasses instead of using the <code>Object</code> class directly.
-/// \code
-/// class Dog: Object {
-///     @objc dynamic var name: String = ""
-///     @objc dynamic var adopted: Bool = false
-///     let siblings = List<Dog>()
-/// }
-///
-/// \endcode<h3>Supported property types</h3>
-/// <ul>
-///   <li>
-///     <code>String</code>, <code>NSString</code>
-///   </li>
-///   <li>
-///     <code>Int</code>
-///   </li>
-///   <li>
-///     <code>Int8</code>, <code>Int16</code>, <code>Int32</code>, <code>Int64</code>
-///   </li>
-///   <li>
-///     <code>Float</code>
-///   </li>
-///   <li>
-///     <code>Double</code>
-///   </li>
-///   <li>
-///     <code>Bool</code>
-///   </li>
-///   <li>
-///     <code>Date</code>, <code>NSDate</code>
-///   </li>
-///   <li>
-///     <code>Data</code>, <code>NSData</code>
-///   </li>
-///   <li>
-///     <code>Decimal128</code>
-///   </li>
-///   <li>
-///     <code>ObjectId</code>
-///   </li>
-///   <li>
-///     <code>@objc enum</code> which has been delcared as conforming to <code>RealmEnum</code>.
-///   </li>
-///   <li>
-///     <code>RealmOptional<Value></code> for optional numeric properties
-///   </li>
-///   <li>
-///     <code>Object</code> subclasses, to model many-to-one relationships
-///   </li>
-///   <li>
-///     <code>EmbeddedObject</code> subclasses, to model owning one-to-one relationships
-///   </li>
-///   <li>
-///     <code>List<Element></code>, to model many-to-many relationships
-///   </li>
-/// </ul>
-/// <code>String</code>, <code>NSString</code>, <code>Date</code>, <code>NSDate</code>, <code>Data</code>, <code>NSData</code>, <code>Decimal128</code>, and <code>ObjectId</code>  properties
-/// can be declared as optional. <code>Object</code> and <code>EmbeddedObject</code> subclasses <em>must</em> be declared as optional.
-/// <code>Int</code>, <code>Int8</code>, <code>Int16</code>, <code>Int32</code>, <code>Int64</code>, <code>Float</code>, <code>Double</code>, <code>Bool</code>,  enum, and <code>List</code> properties cannot.
-/// To store an optional number, use <code>RealmOptional<Int></code>, <code>RealmOptional<Float></code>, <code>RealmOptional<Double></code>, or
-/// <code>RealmOptional<Bool></code> instead, which wraps an optional numeric value. Lists cannot be optional at all.
-/// All property types except for <code>List</code> and <code>RealmOptional</code> <em>must</em> be declared as <code>@objc dynamic var</code>. <code>List</code> and
-/// <code>RealmOptional</code> properties must be declared as non-dynamic <code>let</code> properties. Swift <code>lazy</code> properties are not allowed.
-/// Note that none of the restrictions listed above apply to properties that are configured to be ignored by Realm.
-/// <h3>Querying</h3>
-/// You can retrieve all objects of a given type from a Realm by calling the <code>objects(_:)</code> instance method.
-/// <h3>Relationships</h3>
-/// See our <a href="http://realm.io/docs/cocoa">Cocoa guide</a> for more details.
-SWIFT_CLASS_NAMED("Object")
-@interface RealmSwiftObject : RLMObjectBase
-/// Creates an unmanaged instance of a Realm object.
-/// Call <code>add(_:)</code> on a <code>Realm</code> instance to add an unmanaged object into that Realm.
-/// <ul>
-///   <li>
-///     see: <code>Realm().add(_:)</code>
-///   </li>
-/// </ul>
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
-/// Indicates if the object can no longer be accessed because it is now invalid.
-/// An object can no longer be accessed if the object has been deleted from the Realm that manages it, or if
-/// <code>invalidate()</code> is called on that Realm. This property is key-value observable.
-@property (nonatomic, readonly, getter=isInvalidated) BOOL invalidated;
-/// A human-readable description of the object.
-@property (nonatomic, readonly, copy) NSString * _Nonnull description;
-/// WARNING: This is an internal helper method not intended for public use.
-/// It is not considered part of the public API.
-/// :nodoc:
-+ (NSArray<RLMProperty *> * _Nonnull)_getProperties SWIFT_WARN_UNUSED_RESULT;
-/// Override this method to specify the name of a property to be used as the primary key.
-/// Only properties of types <code>String</code> and <code>Int</code> can be designated as the primary key. Primary key properties enforce
-/// uniqueness for each value whenever the property is set, which incurs minor overhead. Indexes are created
-/// automatically for primary key properties.
-///
-/// returns:
-/// The name of the property designated as the primary key, or <code>nil</code> if the model has no primary key.
-+ (NSString * _Nullable)primaryKey SWIFT_WARN_UNUSED_RESULT;
-/// Override this method to specify the names of properties to ignore. These properties will not be managed by
-/// the Realm that manages the object.
-///
-/// returns:
-/// An array of property names to ignore.
-+ (NSArray<NSString *> * _Nonnull)ignoredProperties SWIFT_WARN_UNUSED_RESULT;
-/// Returns an array of property names for properties which should be indexed.
-/// Only string, integer, boolean, <code>Date</code>, and <code>NSDate</code> properties are supported.
-///
-/// returns:
-/// An array of property names.
-+ (NSArray<NSString *> * _Nonnull)indexedProperties SWIFT_WARN_UNUSED_RESULT;
-- (id _Nullable)objectForKeyedSubscript:(NSString * _Nonnull)key SWIFT_WARN_UNUSED_RESULT;
-- (void)setObject:(id _Nullable)value forKeyedSubscript:(NSString * _Nonnull)key;
-@end
-
 
 /// Object interface which allows untyped getters and setters for Objects.
 /// :nodoc:
@@ -1490,66 +1154,6 @@ SWIFT_CLASS("_TtC10RealmSwift13DynamicObject")
 @end
 
 
-/// <code>EmbeddedObject</code> is a base class used to define embedded Realm model objects.
-/// Embedded objects work similarly to normal objects, but are owned by a single
-/// parent Object (which itself may be embedded). Unlike normal top-level objects,
-/// embedded objects cannot be directly created in or added to a Realm. Instead,
-/// they can only be created as part of a parent object, or by assigning an
-/// unmanaged object to a parent object’s property. Embedded objects are
-/// automatically deleted when the parent object is deleted or when the parent is
-/// modified to no longer point at the embedded object, either by reassigning an
-/// Object property or by removing the embedded object from the List containing it.
-/// Embedded objects can only ever have a single parent object which links to
-/// them, and attempting to link to an existing managed embedded object will throw
-/// an exception.
-/// The property types supported on <code>EmbeddedObject</code> are the same as for <code>Object</code>,
-/// except for that embedded objects cannot link to top-level objects, so <code>Object</code>
-/// and <code>List<Object></code> properties are not supported (<code>EmbeddedObject</code> and
-/// <code>List<EmbeddedObject></code> <em>are</em>).
-/// Embedded objects cannot have primary keys or indexed properties.
-/// \code
-/// class Owner: Object {
-///     @objc dynamic var name: String = ""
-///     let dogs = List<Dog>()
-/// }
-/// class Dog: EmbeddedObject {
-///     @objc dynamic var name: String = ""
-///     @objc dynamic var adopted: Bool = false
-///     let owner = LinkingObjects(fromType: Owner.self, property: "dogs")
-/// }
-///
-/// \endcode
-SWIFT_CLASS_NAMED("EmbeddedObject")
-@interface RealmSwiftEmbeddedObject : RLMObjectBase
-/// :nodoc:
-+ (BOOL)isEmbedded SWIFT_WARN_UNUSED_RESULT;
-/// Creates an unmanaged instance of a Realm object.
-/// An unmanaged embedded object can be added to a Realm by assigning it to a property of a managed object or by adding it to a managed List.
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
-/// Indicates if the object can no longer be accessed because it is now invalid.
-/// An object can no longer be accessed if the object has been deleted from the Realm that manages it, or if
-/// <code>invalidate()</code> is called on that Realm.
-@property (nonatomic, readonly, getter=isInvalidated) BOOL invalidated;
-/// A human-readable description of the object.
-@property (nonatomic, readonly, copy) NSString * _Nonnull description;
-/// WARNING: This is an internal helper method not intended for public use.
-/// It is not considered part of the public API.
-/// :nodoc:
-+ (NSArray<RLMProperty *> * _Nonnull)_getProperties SWIFT_WARN_UNUSED_RESULT;
-/// Override this method to specify the names of properties to ignore. These properties will not be managed by
-/// the Realm that manages the object.
-///
-/// returns:
-/// An array of property names to ignore.
-+ (NSArray<NSString *> * _Nonnull)ignoredProperties SWIFT_WARN_UNUSED_RESULT;
-- (id _Nullable)objectForKeyedSubscript:(NSString * _Nonnull)key SWIFT_WARN_UNUSED_RESULT;
-- (void)setObject:(id _Nullable)value forKeyedSubscript:(NSString * _Nonnull)key;
-@end
-
-
-
-
-
 /// :nodoc:
 /// Internal class. Do not use directly.
 SWIFT_CLASS("_TtC10RealmSwift8ListBase")
@@ -1559,12 +1163,6 @@ SWIFT_CLASS("_TtC10RealmSwift8ListBase")
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 - (nonnull instancetype)initWithArray:(RLMArray<id> * _Nonnull)array OBJC_DESIGNATED_INITIALIZER;
 @end
-
-
-
-
-
-
 
 
 
@@ -1626,6 +1224,78 @@ SWIFT_CLASS_NAMED("ObjectId")
 
 
 
+
+
+
+
+
+
+
+@class RLMProperty;
+
+@interface RealmSwiftEmbeddedObject (SWIFT_EXTENSION(RealmSwift))
+/// :nodoc:
++ (BOOL)isEmbedded SWIFT_WARN_UNUSED_RESULT;
+/// Indicates if the object can no longer be accessed because it is now invalid.
+/// An object can no longer be accessed if the object has been deleted from the Realm that manages it, or if
+/// <code>invalidate()</code> is called on that Realm.
+@property (nonatomic, readonly, getter=isInvalidated) BOOL invalidated;
+/// A human-readable description of the object.
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+/// WARNING: This is an internal helper method not intended for public use.
+/// It is not considered part of the public API.
+/// :nodoc:
++ (NSArray<RLMProperty *> * _Nonnull)_getProperties SWIFT_WARN_UNUSED_RESULT;
+/// Override this method to specify the names of properties to ignore. These properties will not be managed by
+/// the Realm that manages the object.
+///
+/// returns:
+/// An array of property names to ignore.
++ (NSArray<NSString *> * _Nonnull)ignoredProperties SWIFT_WARN_UNUSED_RESULT;
+- (id _Nullable)objectForKeyedSubscript:(NSString * _Nonnull)key SWIFT_WARN_UNUSED_RESULT;
+- (void)setObject:(id _Nullable)value forKeyedSubscript:(NSString * _Nonnull)key;
+@end
+
+
+
+
+
+
+
+@interface RealmSwiftObject (SWIFT_EXTENSION(RealmSwift))
+/// Indicates if the object can no longer be accessed because it is now invalid.
+/// An object can no longer be accessed if the object has been deleted from the Realm that manages it, or if
+/// <code>invalidate()</code> is called on that Realm. This property is key-value observable.
+@property (nonatomic, readonly, getter=isInvalidated) BOOL invalidated;
+/// A human-readable description of the object.
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+/// WARNING: This is an internal helper method not intended for public use.
+/// It is not considered part of the public API.
+/// :nodoc:
++ (NSArray<RLMProperty *> * _Nonnull)_getProperties SWIFT_WARN_UNUSED_RESULT;
+/// Override this method to specify the name of a property to be used as the primary key.
+/// Only properties of types <code>String</code> and <code>Int</code> can be designated as the primary key. Primary key properties enforce
+/// uniqueness for each value whenever the property is set, which incurs minor overhead. Indexes are created
+/// automatically for primary key properties.
+///
+/// returns:
+/// The name of the property designated as the primary key, or <code>nil</code> if the model has no primary key.
++ (NSString * _Nullable)primaryKey SWIFT_WARN_UNUSED_RESULT;
+/// Override this method to specify the names of properties to ignore. These properties will not be managed by
+/// the Realm that manages the object.
+///
+/// returns:
+/// An array of property names to ignore.
++ (NSArray<NSString *> * _Nonnull)ignoredProperties SWIFT_WARN_UNUSED_RESULT;
+/// Returns an array of property names for properties which should be indexed.
+/// Only string, integer, boolean, <code>Date</code>, and <code>NSDate</code> properties are supported.
+///
+/// returns:
+/// An array of property names.
++ (NSArray<NSString *> * _Nonnull)indexedProperties SWIFT_WARN_UNUSED_RESULT;
+- (id _Nullable)objectForKeyedSubscript:(NSString * _Nonnull)key SWIFT_WARN_UNUSED_RESULT;
+- (void)setObject:(id _Nullable)value forKeyedSubscript:(NSString * _Nonnull)key;
+@end
 
 #if __has_attribute(external_source_symbol)
 # pragma clang attribute pop
@@ -1904,122 +1574,6 @@ SWIFT_CLASS_NAMED("Decimal128")
 
 
 
-@class RLMProperty;
-
-/// <code>Object</code> is a class used to define Realm model objects.
-/// In Realm you define your model classes by subclassing <code>Object</code> and adding properties to be managed.
-/// You then instantiate and use your custom subclasses instead of using the <code>Object</code> class directly.
-/// \code
-/// class Dog: Object {
-///     @objc dynamic var name: String = ""
-///     @objc dynamic var adopted: Bool = false
-///     let siblings = List<Dog>()
-/// }
-///
-/// \endcode<h3>Supported property types</h3>
-/// <ul>
-///   <li>
-///     <code>String</code>, <code>NSString</code>
-///   </li>
-///   <li>
-///     <code>Int</code>
-///   </li>
-///   <li>
-///     <code>Int8</code>, <code>Int16</code>, <code>Int32</code>, <code>Int64</code>
-///   </li>
-///   <li>
-///     <code>Float</code>
-///   </li>
-///   <li>
-///     <code>Double</code>
-///   </li>
-///   <li>
-///     <code>Bool</code>
-///   </li>
-///   <li>
-///     <code>Date</code>, <code>NSDate</code>
-///   </li>
-///   <li>
-///     <code>Data</code>, <code>NSData</code>
-///   </li>
-///   <li>
-///     <code>Decimal128</code>
-///   </li>
-///   <li>
-///     <code>ObjectId</code>
-///   </li>
-///   <li>
-///     <code>@objc enum</code> which has been delcared as conforming to <code>RealmEnum</code>.
-///   </li>
-///   <li>
-///     <code>RealmOptional<Value></code> for optional numeric properties
-///   </li>
-///   <li>
-///     <code>Object</code> subclasses, to model many-to-one relationships
-///   </li>
-///   <li>
-///     <code>EmbeddedObject</code> subclasses, to model owning one-to-one relationships
-///   </li>
-///   <li>
-///     <code>List<Element></code>, to model many-to-many relationships
-///   </li>
-/// </ul>
-/// <code>String</code>, <code>NSString</code>, <code>Date</code>, <code>NSDate</code>, <code>Data</code>, <code>NSData</code>, <code>Decimal128</code>, and <code>ObjectId</code>  properties
-/// can be declared as optional. <code>Object</code> and <code>EmbeddedObject</code> subclasses <em>must</em> be declared as optional.
-/// <code>Int</code>, <code>Int8</code>, <code>Int16</code>, <code>Int32</code>, <code>Int64</code>, <code>Float</code>, <code>Double</code>, <code>Bool</code>,  enum, and <code>List</code> properties cannot.
-/// To store an optional number, use <code>RealmOptional<Int></code>, <code>RealmOptional<Float></code>, <code>RealmOptional<Double></code>, or
-/// <code>RealmOptional<Bool></code> instead, which wraps an optional numeric value. Lists cannot be optional at all.
-/// All property types except for <code>List</code> and <code>RealmOptional</code> <em>must</em> be declared as <code>@objc dynamic var</code>. <code>List</code> and
-/// <code>RealmOptional</code> properties must be declared as non-dynamic <code>let</code> properties. Swift <code>lazy</code> properties are not allowed.
-/// Note that none of the restrictions listed above apply to properties that are configured to be ignored by Realm.
-/// <h3>Querying</h3>
-/// You can retrieve all objects of a given type from a Realm by calling the <code>objects(_:)</code> instance method.
-/// <h3>Relationships</h3>
-/// See our <a href="http://realm.io/docs/cocoa">Cocoa guide</a> for more details.
-SWIFT_CLASS_NAMED("Object")
-@interface RealmSwiftObject : RLMObjectBase
-/// Creates an unmanaged instance of a Realm object.
-/// Call <code>add(_:)</code> on a <code>Realm</code> instance to add an unmanaged object into that Realm.
-/// <ul>
-///   <li>
-///     see: <code>Realm().add(_:)</code>
-///   </li>
-/// </ul>
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
-/// Indicates if the object can no longer be accessed because it is now invalid.
-/// An object can no longer be accessed if the object has been deleted from the Realm that manages it, or if
-/// <code>invalidate()</code> is called on that Realm. This property is key-value observable.
-@property (nonatomic, readonly, getter=isInvalidated) BOOL invalidated;
-/// A human-readable description of the object.
-@property (nonatomic, readonly, copy) NSString * _Nonnull description;
-/// WARNING: This is an internal helper method not intended for public use.
-/// It is not considered part of the public API.
-/// :nodoc:
-+ (NSArray<RLMProperty *> * _Nonnull)_getProperties SWIFT_WARN_UNUSED_RESULT;
-/// Override this method to specify the name of a property to be used as the primary key.
-/// Only properties of types <code>String</code> and <code>Int</code> can be designated as the primary key. Primary key properties enforce
-/// uniqueness for each value whenever the property is set, which incurs minor overhead. Indexes are created
-/// automatically for primary key properties.
-///
-/// returns:
-/// The name of the property designated as the primary key, or <code>nil</code> if the model has no primary key.
-+ (NSString * _Nullable)primaryKey SWIFT_WARN_UNUSED_RESULT;
-/// Override this method to specify the names of properties to ignore. These properties will not be managed by
-/// the Realm that manages the object.
-///
-/// returns:
-/// An array of property names to ignore.
-+ (NSArray<NSString *> * _Nonnull)ignoredProperties SWIFT_WARN_UNUSED_RESULT;
-/// Returns an array of property names for properties which should be indexed.
-/// Only string, integer, boolean, <code>Date</code>, and <code>NSDate</code> properties are supported.
-///
-/// returns:
-/// An array of property names.
-+ (NSArray<NSString *> * _Nonnull)indexedProperties SWIFT_WARN_UNUSED_RESULT;
-- (id _Nullable)objectForKeyedSubscript:(NSString * _Nonnull)key SWIFT_WARN_UNUSED_RESULT;
-- (void)setObject:(id _Nullable)value forKeyedSubscript:(NSString * _Nonnull)key;
-@end
-
 
 /// Object interface which allows untyped getters and setters for Objects.
 /// :nodoc:
@@ -2037,66 +1591,6 @@ SWIFT_CLASS("_TtC10RealmSwift13DynamicObject")
 @end
 
 
-/// <code>EmbeddedObject</code> is a base class used to define embedded Realm model objects.
-/// Embedded objects work similarly to normal objects, but are owned by a single
-/// parent Object (which itself may be embedded). Unlike normal top-level objects,
-/// embedded objects cannot be directly created in or added to a Realm. Instead,
-/// they can only be created as part of a parent object, or by assigning an
-/// unmanaged object to a parent object’s property. Embedded objects are
-/// automatically deleted when the parent object is deleted or when the parent is
-/// modified to no longer point at the embedded object, either by reassigning an
-/// Object property or by removing the embedded object from the List containing it.
-/// Embedded objects can only ever have a single parent object which links to
-/// them, and attempting to link to an existing managed embedded object will throw
-/// an exception.
-/// The property types supported on <code>EmbeddedObject</code> are the same as for <code>Object</code>,
-/// except for that embedded objects cannot link to top-level objects, so <code>Object</code>
-/// and <code>List<Object></code> properties are not supported (<code>EmbeddedObject</code> and
-/// <code>List<EmbeddedObject></code> <em>are</em>).
-/// Embedded objects cannot have primary keys or indexed properties.
-/// \code
-/// class Owner: Object {
-///     @objc dynamic var name: String = ""
-///     let dogs = List<Dog>()
-/// }
-/// class Dog: EmbeddedObject {
-///     @objc dynamic var name: String = ""
-///     @objc dynamic var adopted: Bool = false
-///     let owner = LinkingObjects(fromType: Owner.self, property: "dogs")
-/// }
-///
-/// \endcode
-SWIFT_CLASS_NAMED("EmbeddedObject")
-@interface RealmSwiftEmbeddedObject : RLMObjectBase
-/// :nodoc:
-+ (BOOL)isEmbedded SWIFT_WARN_UNUSED_RESULT;
-/// Creates an unmanaged instance of a Realm object.
-/// An unmanaged embedded object can be added to a Realm by assigning it to a property of a managed object or by adding it to a managed List.
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
-/// Indicates if the object can no longer be accessed because it is now invalid.
-/// An object can no longer be accessed if the object has been deleted from the Realm that manages it, or if
-/// <code>invalidate()</code> is called on that Realm.
-@property (nonatomic, readonly, getter=isInvalidated) BOOL invalidated;
-/// A human-readable description of the object.
-@property (nonatomic, readonly, copy) NSString * _Nonnull description;
-/// WARNING: This is an internal helper method not intended for public use.
-/// It is not considered part of the public API.
-/// :nodoc:
-+ (NSArray<RLMProperty *> * _Nonnull)_getProperties SWIFT_WARN_UNUSED_RESULT;
-/// Override this method to specify the names of properties to ignore. These properties will not be managed by
-/// the Realm that manages the object.
-///
-/// returns:
-/// An array of property names to ignore.
-+ (NSArray<NSString *> * _Nonnull)ignoredProperties SWIFT_WARN_UNUSED_RESULT;
-- (id _Nullable)objectForKeyedSubscript:(NSString * _Nonnull)key SWIFT_WARN_UNUSED_RESULT;
-- (void)setObject:(id _Nullable)value forKeyedSubscript:(NSString * _Nonnull)key;
-@end
-
-
-
-
-
 /// :nodoc:
 /// Internal class. Do not use directly.
 SWIFT_CLASS("_TtC10RealmSwift8ListBase")
@@ -2106,10 +1600,6 @@ SWIFT_CLASS("_TtC10RealmSwift8ListBase")
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 - (nonnull instancetype)initWithArray:(RLMArray<id> * _Nonnull)array OBJC_DESIGNATED_INITIALIZER;
 @end
-
-
-
-
 
 
 
@@ -2164,6 +1654,76 @@ SWIFT_CLASS_NAMED("ObjectId")
 
 
 
+
+
+
+
+
+
+
+@class RLMProperty;
+
+@interface RealmSwiftEmbeddedObject (SWIFT_EXTENSION(RealmSwift))
+/// :nodoc:
++ (BOOL)isEmbedded SWIFT_WARN_UNUSED_RESULT;
+/// Indicates if the object can no longer be accessed because it is now invalid.
+/// An object can no longer be accessed if the object has been deleted from the Realm that manages it, or if
+/// <code>invalidate()</code> is called on that Realm.
+@property (nonatomic, readonly, getter=isInvalidated) BOOL invalidated;
+/// A human-readable description of the object.
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+/// WARNING: This is an internal helper method not intended for public use.
+/// It is not considered part of the public API.
+/// :nodoc:
++ (NSArray<RLMProperty *> * _Nonnull)_getProperties SWIFT_WARN_UNUSED_RESULT;
+/// Override this method to specify the names of properties to ignore. These properties will not be managed by
+/// the Realm that manages the object.
+///
+/// returns:
+/// An array of property names to ignore.
++ (NSArray<NSString *> * _Nonnull)ignoredProperties SWIFT_WARN_UNUSED_RESULT;
+- (id _Nullable)objectForKeyedSubscript:(NSString * _Nonnull)key SWIFT_WARN_UNUSED_RESULT;
+- (void)setObject:(id _Nullable)value forKeyedSubscript:(NSString * _Nonnull)key;
+@end
+
+
+
+
+
+@interface RealmSwiftObject (SWIFT_EXTENSION(RealmSwift))
+/// Indicates if the object can no longer be accessed because it is now invalid.
+/// An object can no longer be accessed if the object has been deleted from the Realm that manages it, or if
+/// <code>invalidate()</code> is called on that Realm. This property is key-value observable.
+@property (nonatomic, readonly, getter=isInvalidated) BOOL invalidated;
+/// A human-readable description of the object.
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
+/// WARNING: This is an internal helper method not intended for public use.
+/// It is not considered part of the public API.
+/// :nodoc:
++ (NSArray<RLMProperty *> * _Nonnull)_getProperties SWIFT_WARN_UNUSED_RESULT;
+/// Override this method to specify the name of a property to be used as the primary key.
+/// Only properties of types <code>String</code> and <code>Int</code> can be designated as the primary key. Primary key properties enforce
+/// uniqueness for each value whenever the property is set, which incurs minor overhead. Indexes are created
+/// automatically for primary key properties.
+///
+/// returns:
+/// The name of the property designated as the primary key, or <code>nil</code> if the model has no primary key.
++ (NSString * _Nullable)primaryKey SWIFT_WARN_UNUSED_RESULT;
+/// Override this method to specify the names of properties to ignore. These properties will not be managed by
+/// the Realm that manages the object.
+///
+/// returns:
+/// An array of property names to ignore.
++ (NSArray<NSString *> * _Nonnull)ignoredProperties SWIFT_WARN_UNUSED_RESULT;
+/// Returns an array of property names for properties which should be indexed.
+/// Only string, integer, boolean, <code>Date</code>, and <code>NSDate</code> properties are supported.
+///
+/// returns:
+/// An array of property names.
++ (NSArray<NSString *> * _Nonnull)indexedProperties SWIFT_WARN_UNUSED_RESULT;
+- (id _Nullable)objectForKeyedSubscript:(NSString * _Nonnull)key SWIFT_WARN_UNUSED_RESULT;
+- (void)setObject:(id _Nullable)value forKeyedSubscript:(NSString * _Nonnull)key;
+@end
 
 #if __has_attribute(external_source_symbol)
 # pragma clang attribute pop
