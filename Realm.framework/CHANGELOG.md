@@ -1,3 +1,48 @@
+10.1.1 Release notes (2020-10-27)
+=============================================================
+
+### Enhancements
+
+* Set the minimum CocoaPods version in the podspec so that trying to install
+  with older versions gives a more useful error ([PR #6892](https://github.com/realm/realm-cocoa/pull/6892)).
+
+### Fixed
+
+* Embedded objects could not be marked as `ObjectKeyIdentifable`
+  ([PR #6890](https://github.com/realm/realm-cocoa/pull/6890), since v10.0.0).
+
+### Compatibility
+
+* Realm Studio: 10.0.0 or later.
+* APIs are backwards compatible with all previous releases in the 10.x.y series.
+* Carthage release for Swift is built with Xcode 12.1.
+* CocoaPods: 1.10 or later.
+
+10.1.0 Release notes (2020-10-22)
+=============================================================
+
+CocoaPods 1.10 or later is now required to install Realm.
+
+### Enhancements
+
+* Throw an exception for Objects that have none of its properties marked with @objc.
+* Mac Catalyst and arm64 simulators are now supported when integrating via Cocoapods.
+* Add Xcode 12.1 binaries to the release package.
+* Add Combine support for `Realm.asyncOpen()`.
+
+### Fixed
+
+* Implement precise and unbatched notification of sync completion events. This
+  avoids a race condition where an earlier upload completion event will notify
+  a later waiter whose changes haven't been uploaded yet.
+  ([#1118](https://github.com/realm/realm-object-store/pull/1118)).
+
+### Compatibility
+
+* Realm Studio: 10.0.0 or later.
+* APIs are backwards compatible with all previous releases in the 10.x.y series.
+* Carthage release for Swift is built with Xcode 12.1.
+
 10.0.0 Release notes (2020-10-16)
 =============================================================
 
